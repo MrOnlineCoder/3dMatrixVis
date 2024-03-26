@@ -34,6 +34,9 @@ export class Vector3 {
   }
 
   normalize(): Vector3 {
+    if (this.length() == 0) {
+      return new Vector3();
+    }
     return this.divide(this.length());
   }
 }
@@ -104,8 +107,8 @@ export class Matrix4 {
 
   static rotationX(angle: number): Matrix4 {
     const result = new Matrix4();
-    const c = Math.cos(angle);
-    const s = Math.sin(angle);
+    const c = Math.cos(toRadians(angle));
+    const s = Math.sin(toRadians(angle));
 
     result.cols[1][1] = c;
     result.cols[1][2] = -s;
@@ -117,8 +120,8 @@ export class Matrix4 {
 
   static rotationY(angle: number): Matrix4 {
     const result = new Matrix4();
-    const c = Math.cos(angle);
-    const s = Math.sin(angle);
+    const c = Math.cos(toRadians(angle));
+    const s = Math.sin(toRadians(angle));
 
     result.cols[0][0] = c;
     result.cols[0][2] = s;
@@ -130,8 +133,8 @@ export class Matrix4 {
 
   static rotationZ(angle: number): Matrix4 {
     const result = new Matrix4();
-    const c = Math.cos(angle);
-    const s = Math.sin(angle);
+    const c = Math.cos(toRadians(angle));
+    const s = Math.sin(toRadians(angle));
 
     result.cols[0][0] = c;
     result.cols[0][1] = -s;
@@ -185,3 +188,5 @@ export class Matrix4 {
     return result;
   }
 }
+
+export const toRadians = (degrees: number) => degrees * (Math.PI / 180);

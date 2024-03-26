@@ -5,7 +5,7 @@ import {
   initShaders,
   initWebGl,
 } from './gl';
-import { Matrix4 } from './math';
+import { Matrix4, Vector3 } from './math';
 
 let gl: WebGLRenderingContext | null;
 let shaderProgram: WebGLProgram | null;
@@ -112,6 +112,148 @@ const createProjectionForm = () => {
   };
 };
 
+const createVectorForm = (el: HTMLElement, initialValue: Vector3) => {
+  let vector = initialValue;
+
+  let onChange: (newVector: Vector3) => void = () => {};
+
+  const onVectorChange = (callback: (newVector: Vector3) => void) => {
+    onChange = callback;
+  };
+
+  const createField = (name: string, key: 'x' | 'y' | 'z') => {
+    const input = document.createElement('input');
+    input.type = 'number';
+    input.className = 'input';
+    input.placeholder = name;
+    input.value = vector[key].toString();
+    input.addEventListener('input', () => {
+      vector[key] = parseFloat(input.value);
+      onChange(vector);
+    });
+
+    return input;
+  };
+
+  const xField = createField('X', 'x');
+  const yField = createField('Y', 'y');
+  const zField = createField('Z', 'z');
+
+  el.appendChild(xField);
+  el.appendChild(yField);
+  el.appendChild(zField);
+
+  return {
+    onVectorChange,
+    getVector: () => vector,
+  };
+};
+
+function createViewForm() {
+  const eyeForm = createVectorForm(
+    document.getElementById('viewCameraPosition')!,
+    new Vector3(0, 0, -5)
+  );
+  const centerForm = createVectorForm(
+    document.getElementById('viewCenterPosition')!,
+    new Vector3(0, 0, 0)
+  );
+  const upForm = createVectorForm(
+    document.getElementById('viewWorldUp')!,
+    new Vector3(0, 1, 0)
+  );
+
+  let onChange: (view: Matrix4) => void = () => {};
+
+  const onViewChange = (callback: (view: Matrix4) => void) => {
+    onChange = callback;
+  };
+
+  const updateView = () => {
+    const eye = eyeForm.getVector();
+    const center = centerForm.getVector();
+    const up = upForm.getVector();
+
+    onChange(Matrix4.lookAt(eye, center, up));
+  };
+
+  eyeForm.onVectorChange(updateView);
+  centerForm.onVectorChange(updateView);
+  upForm.onVectorChange(updateView);
+
+  return {
+    onViewChange,
+    updateView,
+  };
+}
+
+function createModelForm() {
+  const translationForm = createVectorForm(
+    document.getElementById('modelTranslation')!,
+    new Vector3(-2.5, -2.5, 0)
+  );
+  const scalingForm = createVectorForm(
+    document.getElementById('modelScaling')!,
+    new Vector3(1, 1, 1)
+  );
+  const rotationForm = createVectorForm(
+    document.getElementById('modelRotation')!,
+    new Vector3(0, 0, 0)
+  );
+
+  let orderString = 'translation,scaling,rotationX,rotationY,rotationZ';
+
+  const orderField = document.getElementById('modelOrder') as HTMLSelectElement;
+  orderField.value = orderString;
+  orderField.onchange = () => {
+    orderString = orderField.value;
+    updateModel();
+  };
+
+  let onChange: (model: Matrix4) => void = () => {};
+
+  const onModelChange = (callback: (model: Matrix4) => void) => {
+    onChange = callback;
+  };
+
+  const updateModel = () => {
+    const translation = translationForm.getVector();
+    const scaling = scalingForm.getVector();
+    const rotation = rotationForm.getVector();
+
+    const matrices = {
+      translation: Matrix4.translation(
+        translation.x,
+        translation.y,
+        translation.z
+      ),
+      scaling: Matrix4.scaling(scaling.x, scaling.y, scaling.z),
+      rotationX: Matrix4.rotationX(rotation.x),
+      rotationY: Matrix4.rotationY(rotation.y),
+      rotationZ: Matrix4.rotationZ(rotation.z),
+    };
+
+    const order = orderString.split(',');
+
+    let base = Matrix4.identity();
+
+    for (let i = 0; i < order.length; i++) {
+      base = base.multiply((matrices as any)[order[i]]);
+    }
+
+    onChange(base);
+  };
+
+  translationForm.onVectorChange(updateModel);
+  scalingForm.onVectorChange(updateModel);
+  rotationForm.onVectorChange(updateModel);
+
+  return {
+    onModelChange,
+    updateModel,
+  };
+}
+
 async function init() {
   const canvasElement = document.getElementById('gl');
 
@@ -136,7 +278,10 @@ async function init() {
     document.getElementById('projectionForm')!,
     Matrix4.perspective(45, 800 / 600, 0.1, 100)
   );
-  const viewForm = createMatrixForm(document.getElementById('viewForm')!);
+  const viewForm = createMatrixForm(
+    document.getElementById('viewForm')!,
+    Matrix4.lookAt(new Vector3(0, 0, -5), new Vector3(), new Vector3(0, 1, 0))
+  );
   const modelForm = createMatrixForm(
     document.getElementById('modelForm')!,
     Matrix4.translation(-5 / 2, -5 / 2, 0)
@@ -167,6 +312,18 @@ async function init() {
 
   projectionEditForm.onProjectionChange((proj) => {
     projectionForm.setMatrix(proj);
+    renderVisualization();
+  });
+
+  const viewEditForm = createViewForm();
+  viewEditForm.onViewChange((view) => {
+    viewForm.setMatrix(view);
+    renderVisualization();
+  });
+
+  const modelEditForm = createModelForm();
+  modelEditForm.onModelChange((model) => {
+    modelForm.setMatrix(model);
     renderVisualization();
   });
 

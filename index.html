@@ -34,12 +34,79 @@
             <h2 class="is-size-2">Input</h2>
             <div class="box">
               <div class="title is-4">Model Matrix</div>
+              <div class="block">
+                <div class="field">
+                  <label class="label">Translation</label>
+                  <div class="control level" id="modelTranslation"></div>
+                </div>
+                <div class="field">
+                  <label class="label">Scaling</label>
+                  <div class="control level" id="modelScaling"></div>
+                </div>
+                <div class="field">
+                  <label class="label">Rotation (degrees)</label>
+                  <div class="control level" id="modelRotation"></div>
+                </div>
+                <div class="field">
+                  <label class="label">Transformations Order</label>
+                  <div class="control level">
+                    <div class="select">
+                      <select id="modelOrder">
+                        <option
+                          value="translation,scaling,rotationX,rotationY,rotationZ"
+                        >
+                          Translate, Scale, Rotate X, Rotate Y, Rotate Z
+                        </option>
+                        <option
+                          value="translation,scaling,rotationZ,rotationY,rotationX"
+                        >
+                          Translate, Scale, Rotate Z, Rotate Y, Rotate X
+                        </option>
+                        <option
+                          value="rotationZ,rotationY,rotationX,scaling,translation"
+                        >
+                          Rotate Z, Rotate Y, Rotate X, Scale, Translate
+                        </option>
+                        <option
+                          value="rotationX,rotationY,rotationZ,scaling,translation"
+                        >
+                          Rotate X, Rotate Y, Rotate Z, Scale, Translate
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="level">
+                <div class="level-item has-text-centered title is-5">
+                  or modify values manually
+                </div>
+              </div>
               <div class="fixed-grid has-4-cols">
                 <div class="grid" id="modelForm"></div>
               </div>
             </div>
             <div class="box">
               <div class="title is-4">View Matrix</div>
+              <div class="block">
+                <div class="field">
+                  <label class="label">Camera Position (Eye)</label>
+                  <div class="control level" id="viewCameraPosition"></div>
+                </div>
+                <div class="field">
+                  <label class="label">Center Position</label>
+                  <div class="control level" id="viewCenterPosition"></div>
+                </div>
+                <div class="field">
+                  <label class="label">World Up</label>
+                  <div class="control level" id="viewWorldUp"></div>
+                </div>
+              </div>
+              <div class="level">
+                <div class="level-item has-text-centered title is-5">
+                  or modify values manually
+                </div>
+              </div>
               <div class="fixed-grid has-4-cols">
                 <div class="grid" id="viewForm"></div>
               </div>

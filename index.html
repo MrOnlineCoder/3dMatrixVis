@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3D Matrix Transformations Visualization</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css"
+    />
+
+    <style>
+      .wrapper {
+        padding: 32px;
+      }
+
+      .output-canvas {
+        width: 800px;
+        height: 600px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="block">
+        <h1 class="is-size-1">3D Matrix Transformations Visualization</h1>
+      </div>
+
+      <div class="block">
+        <div class="columns">
+          <div class="column">
+            <h2 class="is-size-2">Input</h2>
+            <div class="box">
+              <div class="title is-4">Model Matrix</div>
+              <div class="fixed-grid has-4-cols">
+                <div class="grid" id="modelForm"></div>
+              </div>
+            </div>
+            <div class="box">
+              <div class="title is-4">View Matrix</div>
+              <div class="fixed-grid has-4-cols">
+                <div class="grid" id="viewForm"></div>
+              </div>
+            </div>
+            <div class="box">
+              <div class="title is-4">Projection Matrix</div>
+              <div class="block">
+                <div class="field">
+                  <label class="label">Field of View (FOV), degrees</label>
+                  <div class="control">
+                    <input
+                      class="input"
+                      type="number"
+                      placeholder="45.0"
+                      id="projectionFov"
+                    />
+                  </div>
+                </div>
+                <div class="field">
+                  <label class="label">Z Near Plane</label>
+                  <div class="control">
+                    <input
+                      class="input"
+                      type="number"
+                      placeholder="0.1"
+                      id="projectionZNear"
+                    />
+                  </div>
+                </div>
+                <div class="field">
+                  <label class="label">Z Far Plane</label>
+                  <div class="control">
+                    <input
+                      class="input"
+                      type="number"
+                      placeholder="100.0"
+                      id="projectionZFar"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div class="level">
+                <div class="level-item has-text-centered title is-5">
+                  or modify values manually
+                </div>
+              </div>
+              <div class="fixed-grid has-4-cols">
+                <div class="grid" id="projectionForm"></div>
+              </div>
+            </div>
+          </div>
+          <div class="column">
+            <h2 class="is-size-2">Output</h2>
+            <canvas class="output-canvas" id="gl"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

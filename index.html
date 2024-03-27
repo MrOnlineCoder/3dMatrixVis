@@ -33,7 +33,16 @@
   <body>
     <div class="wrapper">
       <div class="block">
-        <h1 class="is-size-1">3D Matrix Transformations Visualization</h1>
+        <h1 class="title is-1">3D Matrix Transformations Visualization</h1>
+        <p class="subtitle">
+          This simple tool will allow you to visualize how 3D transformations
+          affect the rendering of a 3D object, in this case - simple textured
+          cube. This site uses WebGL for rendering, so make sure your browser
+          supports it.
+        </p>
+        <a href="https://github.com/MrOnlineCoder/3dMatrixVis">
+          <button class="button is-black">View on Github</button>
+        </a>
       </div>
 
       <div class="block">
@@ -93,6 +102,11 @@
               <div class="fixed-grid has-4-cols">
                 <div class="grid" id="modelForm"></div>
               </div>
+              <div class="level">
+                <button class="button is-primary is-fullwidth" id="modelReset">
+                  Reset
+                </button>
+              </div>
             </div>
             <div class="box">
               <div class="title is-4">View Matrix</div>
@@ -118,6 +132,11 @@
               <div class="fixed-grid has-4-cols">
                 <div class="grid" id="viewForm"></div>
               </div>
+              <div class="level">
+                <button class="button is-primary is-fullwidth" id="viewReset">
+                  Reset
+                </button>
+              </div>
             </div>
             <div class="box">
               <div class="title is-4">Projection Matrix</div>
@@ -130,6 +149,17 @@
                       type="number"
                       placeholder="45.0"
                       id="projectionFov"
+                    />
+                  </div>
+                </div>
+                <div class="field">
+                  <label class="label">Aspect Ratio (Width / Height)</label>
+                  <div class="control">
+                    <input
+                      class="input"
+                      type="number"
+                      value="1.33333333"
+                      disabled
                     />
                   </div>
                 </div>
@@ -164,6 +194,14 @@
               <div class="fixed-grid has-4-cols">
                 <div class="grid" id="projectionForm"></div>
               </div>
+              <div class="level">
+                <button
+                  class="button is-primary is-fullwidth"
+                  id="projectionReset"
+                >
+                  Reset
+                </button>
+              </div>
             </div>
           </div>
           <div class="column">
@@ -172,7 +210,7 @@
               <canvas class="output-canvas" id="gl"></canvas>
               <div class="block">
                 <p class="subtitle">
-                  Origin and unit vector after applying all transformations
+                  Origin and unit vectors after applying all transformations
                   (MVP):
                 </p>
                 <div class="title is-3" id="vectorTransform"></div>

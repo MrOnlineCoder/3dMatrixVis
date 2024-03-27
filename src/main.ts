@@ -18,8 +18,8 @@ let shaderProgram: WebGLProgram | null;
 let modelBuffer: WebGLBuffer | null;
 let vertexAttribute: number | null;
 
-const CANVAS_WIDTH = 800;
-const CANVAS_HEIGHT = 600;
+const CANVAS_WIDTH = 1024;
+const CANVAS_HEIGHT = 768;
 
 export const buildCppCode = (options: {
   translation: Vector3;
@@ -163,9 +163,9 @@ const createProjectionForm = () => {
     onChange(Matrix4.perspective(fov, CANVAS_WIDTH / CANVAS_HEIGHT, near, far));
   };
 
-  fovField.addEventListener('input', updateProjection);
-  nearField.addEventListener('input', updateProjection);
-  farField.addEventListener('input', updateProjection);
+  fovField.addEventListener('change', updateProjection);
+  nearField.addEventListener('change', updateProjection);
+  farField.addEventListener('change', updateProjection);
 
   fovField.value = '45';
   nearField.value = '0.1';
@@ -179,6 +179,12 @@ const createProjectionForm = () => {
     getFov: () => parseFloat(fovField.value),
     getNear: () => parseFloat(nearField.value),
     getFar: () => parseFloat(farField.value),
+    reset: () => {
+      fovField.value = '45';
+      nearField.value = '0.1';
+      farField.value = '100';
+      updateProjection();
+    },
   };
 };
 
@@ -216,6 +222,12 @@ const createVectorForm = (el: HTMLElement, initialValue: Vector3) => {
   return {
     onVectorChange,
     getVector: () => vector,
+    setVector: (newVector: Vector3) => {
+      vector = newVector;
+      xField.value = newVector.x.toString();
+      yField.value = newVector.y.toString();
+      zField.value = newVector.z.toString();
+    },
   };
 };
 
@@ -257,6 +269,11 @@ function createViewForm() {
     getEye: () => eyeForm.getVector(),
     getCenter: () => centerForm.getVector(),
     getUp: () => upForm.getVector(),
+    reset: () => {
+      eyeForm.setVector(new Vector3(0, 0, -5));
+      centerForm.setVector(new Vector3(0, 0, 0));
+      upForm.setVector(new Vector3(0, 1, 0));
+    },
   };
 }
 
@@ -328,6 +345,11 @@ function createModelForm() {
     getRotation: () => rotationForm.getVector(),
     getScaling: () => scalingForm.getVector(),
     getTranslation: () => translationForm.getVector(),
+    reset: () => {
+      translationForm.setVector(new Vector3(-2.5, -2.5, 0));
+      scalingForm.setVector(new Vector3(1, 1, 1));
+      rotationForm.setVector(new Vector3(0, 0, 0));
+    },
   };
 }
 
@@ -366,6 +388,38 @@ async function init() {
     document.getElementById('modelForm')!,
     Matrix4.translation(-5 / 2, -5 / 2, 0)
   );
+
+  const modelResetButton = document.getElementById(
+    'modelReset'
+  ) as HTMLButtonElement;
+
+  modelResetButton.onclick = () => {
+    modelForm.setMatrix(Matrix4.translation(-5 / 2, -5 / 2, 0));
+    modelEditForm.reset();
+    renderVisualization();
+  };
+
+  const viewResetButton = document.getElementById(
+    'viewReset'
+  ) as HTMLButtonElement;
+
+  viewResetButton.onclick = () => {
+    viewForm.setMatrix(
+      Matrix4.lookAt(new Vector3(0, 0, -5), new Vector3(), new Vector3(0, 1, 0))
+    );
+    viewEditForm.reset();
+    renderVisualization();
+  };
+
+  const projectionResetButton = document.getElementById(
+    'projectionReset'
+  ) as HTMLButtonElement;
+
+  projectionResetButton.onclick = () => {
+    projectionForm.setMatrix(Matrix4.perspective(45, 800 / 600, 0.1, 100));
+    projectionEditForm.reset();
+    renderVisualization();
+  };
 
   const texture = await createTexture(gl, './cube.png');
 

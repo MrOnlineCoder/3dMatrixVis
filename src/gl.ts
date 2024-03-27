@@ -1,5 +1,8 @@
 import { FRAGMENT_SHADER_SOURCE, VERTEX_SHADER_SOURCE } from './shaders';
 
+export const CANVAS_WIDTH = 1024;
+export const CANVAS_HEIGHT = 768;
+
 const cubeSize = 5;
 
 const cubeVertices = [

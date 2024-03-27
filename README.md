@@ -2,7 +2,7 @@
 
 This simple tool will allow you to visualize how 3D transformations
 affect the rendering of a 3D object, in this case - simple textured
-cube. Uses 3D rendering.
+cube. Uses WebGL for rendering.
 
 [Live Demo](https://nkgt.tech/3dmatrixvis)
 

@@ -35,6 +35,7 @@ export const buildCppCode = (options: {
   center: Vector3;
   up: Vector3;
 }) => {
+  options.order.reverse();
   const multiplications = options.order.join(' * ');
 
   return `// Model Matrix

@@ -131,54 +131,17 @@ const cubeVertices = [
 ];
 
 const cubeTextureCoordinates = [
-  0.0,
-  0.0,
-  1.0,
-  0.0,
-  1.0,
-  1.0,
-  0.0,
-  1.0, // Front face
-  0.0,
-  0.0,
-  1.0,
-  0.0,
-  1.0,
-  1.0,
-  0.0,
-  1.0, // Back face
-  0.0,
-  0.0,
-  1.0,
-  0.0,
-  1.0,
-  1.0,
-  0.0,
-  1.0, // Top face
-  0.0,
-  0.0,
-  1.0,
-  0.0,
-  1.0,
-  1.0,
-  0.0,
-  1.0, // Bottom face
-  0.0,
-  0.0,
-  1.0,
-  0.0,
-  1.0,
-  1.0,
-  0.0,
-  1.0, // Right face
-  0.0,
-  0.0,
-  1.0,
-  0.0,
-  1.0,
-  1.0,
-  0.0,
-  1.0, // Left face
+  0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0,
+
+  0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0,
+
+  0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0,
+
+  0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0,
+
+  0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0,
+
+  0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0,
 ];
 
 export function initWebGl(canvas: HTMLCanvasElement) {
@@ -274,7 +237,7 @@ export function createVBO(gl: WebGLRenderingContext) {
     concatedVertices.push(cubeVertices[i + 2]);
     concatedVertices.push(cubeTextureCoordinates[tt]);
     concatedVertices.push(cubeTextureCoordinates[tt + 1]);
-    tt++;
+    tt += 2;
   }
 
   gl.bufferData(
@@ -313,7 +276,7 @@ export function drawScene(
 ) {
   gl.clearColor(0.0, 0.0, 0.0, 1.0);
   gl.clear(gl.COLOR_BUFFER_BIT);
-  gl.disable(gl.DEPTH_TEST);
+  gl.enable(gl.DEPTH_TEST);
 
   const stride = 4 * 5;
 

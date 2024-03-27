@@ -172,7 +172,7 @@ export class Matrix4 {
     far: number
   ): Matrix4 {
     const result = new Matrix4();
-    const f = 1.0 / Math.tan(fov / 2.0);
+    const f = 1.0 / Math.tan(toRadians(fov) / 2.0);
 
     result.cols[0][0] = f / aspect;
     result.cols[1][1] = f;

@@ -11,6 +11,14 @@
       href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css"
     />
 
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/cpp.min.js"></script>
+
     <style>
       .wrapper {
         padding: 32px;
@@ -160,7 +168,20 @@
           </div>
           <div class="column">
             <h2 class="is-size-2">Output</h2>
-            <canvas class="output-canvas" id="gl"></canvas>
+            <div class="box">
+              <canvas class="output-canvas" id="gl"></canvas>
+              <div class="block">
+                <p class="subtitle">
+                  Origin and unit vector after applying all transformations
+                  (MVP):
+                </p>
+                <div class="title is-3" id="vectorTransform"></div>
+              </div>
+              <div class="block">
+                <p class="subtitle">C++ code for GLM:</p>
+                <pre><code id="cppCode" class="language-cpp"></code></pre>
+              </div>
+            </div>
           </div>
         </div>
       </div>

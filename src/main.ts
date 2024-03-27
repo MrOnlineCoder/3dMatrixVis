@@ -7,6 +7,12 @@ import {
 } from './gl';
 import { Matrix4, Vector3 } from './math';
 
+import hljs from 'highlight.js/lib/core';
+import cppHljs from 'highlight.js/lib/languages/cpp';
+
+hljs.registerLanguage('cpp', cppHljs);
+hljs.configure({ languages: ['cpp'] });
+
 let gl: WebGLRenderingContext | null;
 let shaderProgram: WebGLProgram | null;
 let modelBuffer: WebGLBuffer | null;
@@ -14,6 +20,66 @@ let vertexAttribute: number | null;
 
 const CANVAS_WIDTH = 800;
 const CANVAS_HEIGHT = 600;
+
+export const buildCppCode = (options: {
+  translation: Vector3;
+  scaling: Vector3;
+  rotation: Vector3;
+  order: string[];
+
+  fov: number;
+  near: number;
+  far: number;
+
+  eye: Vector3;
+  center: Vector3;
+  up: Vector3;
+}) => {
+  const multiplications = options.order.join(' * ');
+
+  return `// Model Matrix
+glm::vec3 rotation = {${options.rotation.x}, ${options.rotation.y}, ${options.rotation.z}};
+glm::vec3 scale = {${options.scaling.x}, ${options.scaling.y}, ${options.scaling.z}};
+glm::vec3 position = {${options.translation.x}, ${options.translation.y}, ${options.translation.z}};
+
+glm::mat4 identity(1.0f);
+glm::mat4 rotationX = glm::rotate(identity, glm::radians(rotation.x), Vector3(1.0f, 0.0f, 0.0f));
+glm::mat4 rotationY = glm::rotate(identity, glm::radians(rotation.y), Vector3(0.0f, 1.0f, 0.0f));
+glm::mat4 rotationZ = glm::rotate(identity, glm::radians(rotation.z), Vector3(0.0f, 0.0f, 1.0f));
+
+glm::mat4 rotation = rotationZ * rotationY * rotationX;
+
+glm::mat4 scaling = glm::scale(identity, scale);
+
+glm::mat4 translation = glm::translate(identity, position);
+
+glm::mat4 ModelMatrix = ${multiplications} * identity;
+
+// View Matrix
+glm::vec3 eye = {${options.eye.x}, ${options.eye.y}, ${options.eye.z}};
+glm::vec3 center = {${options.center.x}, ${options.center.y}, ${options.center.z}};
+glm::vec3 up = {${options.up.x}, ${options.up.y}, ${options.up.z}};
+glm::mat4 ViewMatrix = glm::lookAt(
+  eye, center, up
+);
+
+//Projection
+float windowWidth = ${CANVAS_WIDTH}; // adjust this to your window size
+float windowHeight = ${CANVAS_HEIGHT}; // adjust this to your window size
+float aspectRatio = windowWidth / windowHeight; 
+float zNear = ${options.near};
+float zFar = ${options.far};
+float fov = ${options.fov};
+glm::mat4 ProjectionMatrix = glm::perspective(
+  glm::radians(fov),
+  aspectRation,
+  zNear,
+  zFar
+);
+
+// MVP
+glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;`;
+};
 
 function createMatrixForm(
   el: HTMLElement,
@@ -109,6 +175,9 @@ const createProjectionForm = () => {
       onChange = callback;
     },
     updateProjection,
+    getFov: () => parseFloat(fovField.value),
+    getNear: () => parseFloat(nearField.value),
+    getFar: () => parseFloat(farField.value),
   };
 };
 
@@ -184,6 +253,9 @@ function createViewForm() {
   return {
     onViewChange,
     updateView,
+    getEye: () => eyeForm.getVector(),
+    getCenter: () => centerForm.getVector(),
+    getUp: () => upForm.getVector(),
   };
 }
 
@@ -251,6 +323,10 @@ function createModelForm() {
   return {
     onModelChange,
     updateModel,
+    getOrder: () => orderString.split(','),
+    getRotation: () => rotationForm.getVector(),
+    getScaling: () => scalingForm.getVector(),
+    getTranslation: () => translationForm.getVector(),
   };
 }
 
@@ -269,6 +345,9 @@ async function init() {
     console.error('Could not initialize shaders');
     return;
   }
+
+  const vectorTransformOutput = document.getElementById('vectorTransform');
+  const cppCodeOutput = document.getElementById('cppCode');
 
   shaderProgram = shadersResult?.shaderProgram;
   vertexAttribute = shadersResult?.vertexPositionAttribute;
@@ -302,6 +381,36 @@ async function init() {
       },
       texture!
     );
+
+    const origin = new Vector3(0, 0, 0);
+    const unitVector = new Vector3(1, 1, 1);
+    const MVP = projectionForm
+      .getMatrix()
+      .multiply(viewForm.getMatrix())
+      .multiply(modelForm.getMatrix());
+    const transformedOrigin = MVP.multiplyVector(origin);
+    const transformedUnitVector = MVP.multiplyVector(unitVector);
+
+    vectorTransformOutput!.innerHTML = `(0, 0, 0) ➡️ ${transformedOrigin.toString()}<br>(1, 1, 1) ➡️ ${transformedUnitVector.toString()}`;
+
+    const cppCode = buildCppCode({
+      center: viewEditForm.getCenter(),
+      eye: viewEditForm.getEye(),
+      far: projectionEditForm.getFar(),
+      fov: projectionEditForm.getFov(),
+      near: projectionEditForm.getNear(),
+      order: modelEditForm.getOrder(),
+      rotation: modelEditForm.getRotation(),
+      scaling: modelEditForm.getScaling(),
+      translation: modelEditForm.getTranslation(),
+      up: viewEditForm.getUp(),
+    });
+
+    const highlighedCode = hljs.highlight(cppCode, {
+      language: 'cpp',
+    });
+
+    cppCodeOutput!.innerHTML = highlighedCode.value;
   };
 
   projectionForm.onMatrixChange(renderVisualization);

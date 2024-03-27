@@ -131,21 +131,55 @@ const cubeVertices = [
 ];
 
 const cubeTextureCoordinates = [
-  // Front
-  0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0,
-  // Back
-  0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0,
-  // Top
-  0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0,
-  // Bottom
-  0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0,
-  // Right
-  0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0,
-  // Left
-  0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0,
+  0.0,
+  0.0,
+  1.0,
+  0.0,
+  1.0,
+  1.0,
+  0.0,
+  1.0, // Front face
+  0.0,
+  0.0,
+  1.0,
+  0.0,
+  1.0,
+  1.0,
+  0.0,
+  1.0, // Back face
+  0.0,
+  0.0,
+  1.0,
+  0.0,
+  1.0,
+  1.0,
+  0.0,
+  1.0, // Top face
+  0.0,
+  0.0,
+  1.0,
+  0.0,
+  1.0,
+  1.0,
+  0.0,
+  1.0, // Bottom face
+  0.0,
+  0.0,
+  1.0,
+  0.0,
+  1.0,
+  1.0,
+  0.0,
+  1.0, // Right face
+  0.0,
+  0.0,
+  1.0,
+  0.0,
+  1.0,
+  1.0,
+  0.0,
+  1.0, // Left face
 ];
-
-console.log(cubeTextureCoordinates.length);
 
 export function initWebGl(canvas: HTMLCanvasElement) {
   let gl: WebGLRenderingContext | null = null;

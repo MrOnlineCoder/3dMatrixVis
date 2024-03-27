@@ -39,6 +39,10 @@ export class Vector3 {
     }
     return this.divide(this.length());
   }
+
+  toString() {
+    return `(${this.x.toFixed(3)}, ${this.y.toFixed(3)}, ${this.z.toFixed(3)})`;
+  }
 }
 
 export class Matrix4 {
@@ -75,6 +79,23 @@ export class Matrix4 {
     }
 
     return result;
+  }
+
+  multiplyVector(vector: Vector3): Vector3 {
+    return new Vector3(
+      this.cols[0][0] * vector.x +
+        this.cols[1][0] * vector.y +
+        this.cols[2][0] * vector.z +
+        this.cols[3][0],
+      this.cols[0][1] * vector.x +
+        this.cols[1][1] * vector.y +
+        this.cols[2][1] * vector.z +
+        this.cols[3][1],
+      this.cols[0][2] * vector.x +
+        this.cols[1][2] * vector.y +
+        this.cols[2][2] * vector.z +
+        this.cols[3][2]
+    );
   }
 
   toFloatArray(): Float32Array {
